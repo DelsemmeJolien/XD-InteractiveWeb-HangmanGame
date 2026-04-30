@@ -70,24 +70,23 @@
                 <svg id="hangman" viewBox="0 0 300 300" width="300" height="300" fill="none" xmlns="http://www.w3.org/2000/svg" id="hangman-svg">
                     <!-- Basis -->
                     <line x1="30" y1="270" x2="270" y2="270" stroke="#7B5EA7" stroke-width="5" stroke-linecap="round"/>
-                    <!-- Verticale paal -->
                     <line x1="90" y1="270" x2="90" y2="30" stroke="#7B5EA7" stroke-width="5" stroke-linecap="round"/>
-                    <!-- Horizontale balk -->
                     <line x1="90" y1="30" x2="200" y2="30" stroke="#7B5EA7" stroke-width="5" stroke-linecap="round"/>
+                    
                     <!-- Touw -->
                     <line class="hangman-rope" x1="200" y1="30" x2="200" y2="57" stroke="#7B5EA7" stroke-width="4" stroke-linecap="round" stroke-dasharray="6 4"/>
 
-                    <!-- Hoofd: r=24 -->
+                    <!-- Hoofd -->
                     <circle class="hangman-head" cx="200" cy="81" r="24" stroke="#7B5EA7" stroke-width="5"/>
 
-                    <!-- Lichaam: start onder hoofd (81+24=105), lengte ~70px -->
+                    <!-- Lichaam -->
                     <line class="hangman-body" x1="200" y1="105" x2="200" y2="175" stroke="#7B5EA7" stroke-width="5" stroke-linecap="round" />
 
-                    <!-- Armen: vanaf 1/3 van lichaam (~125) -->
+                    <!-- Armen -->
                     <line class="hangman-arms" x1="200" y1="125" x2="165" y2="155" stroke="#7B5EA7" stroke-width="5" stroke-linecap="round"/>
                     <line class="hangman-arms" x1="200" y1="125" x2="235" y2="155" stroke="#7B5EA7" stroke-width="5" stroke-linecap="round"/>
 
-                    <!-- Benen: vanaf onderkant lichaam (175) -->
+                    <!-- Benen -->
                     <line class="hangman-legs" x1="200" y1="175" x2="170" y2="225" stroke="#7B5EA7" stroke-width="5" stroke-linecap="round"/>
                     <line class="hangman-legs" x1="200" y1="175" x2="230" y2="225" stroke="#7B5EA7" stroke-width="5" stroke-linecap="round"/>
                 </svg> 
