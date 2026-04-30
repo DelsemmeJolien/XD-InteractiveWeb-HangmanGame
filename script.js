@@ -139,30 +139,30 @@ function drawPose(pose) {
 //CODE GAME
 
 //VARIABLES
-const countdown = null;
-const WORD = "EMPATHY";
-const Alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+const word = "EMPATHY";
+const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 const letters = document.querySelectorAll(".letter");
 const hangman = [
+    'hangman-rope',
     'hangman-head',
     'hangman-body',
-    'hangman-arm1',
-    'hangman-arm2',
-    'hangman-leg1',
-    'hangman-leg2'
+    'hangman-arms',
+    'hangman-legs'
 ]
 
 let guessedLetter = new Set();
 let maxWrong = 5;
 let countWrong = 0;
 let cursorIndex = 0;
+let countdown = null;
 
 //FUNCTIES
 function getWord(){
     let wordDisplay = document.querySelector("#word-display");
     wordDisplay.innerHTML = '';
 
-    WORD.split('').forEach(letter => {
+    word.split('').forEach(letter => {
         const divLetter = document.createElement("div");
         divLetter.innerHTML = `<p class="letterWord" data-letter="${letter}" </p>`;
         wordDisplay.appendChild(divLetter);
@@ -197,7 +197,9 @@ function updateLives(){
 }
 
 function updateHangman(){
-    document.querySelector(`#${hangman[countWrong-1]}`).style.display = 'inline'; //eerstvolgende onderste deel van hangman selecteren in html
+    document.querySelectorAll(`.${hangman[countWrong-1]}`).forEach(bodypart => {
+        bodypart.style.display = 'inline';
+    });
 }
 
 //default waarde positie is 0
@@ -233,7 +235,7 @@ function checkGuess(letter) {
 
     let keyLetter = document.querySelector(`.letter[data-letter="${letter}"]`)
 
-    if(WORD.includes(letter)){
+    if(word.includes(letter)){
         showLetter(letter); //bevat woord letter? -> toon letter
         keyLetter.classList.add("correct"); //voeg opmaak toe
         console.log(letter + "-> juist gegokt");
@@ -257,7 +259,7 @@ function rangName(rang) {
 }
 
 function checkGameOver(){
-    const win = WORD.split('').every(letter => guessedLetter.has(letter)); //als elke letter van het woord in de set letters zit
+    const win = word.split('').every(letter => guessedLetter.has(letter)); //als elke letter van het woord in de set letters zit
     const lose = countWrong >= maxWrong;
 
     if(win) {
@@ -311,12 +313,16 @@ function saveScores(){
 
 function restartGame(){
     let seconds = 90;
-    const timer = document.querySelector(".timer");
-    timer.textContent = seconds;
+    let timer = document.querySelectorAll(".timer");
+    timer.forEach(t => {
+        t.innerHTML = seconds;
+    })
 
     countdown = setInterval(() => {
         seconds--;
-        timer.textContent = seconds;
+        timer.forEach(t => {
+            t.innerHTML = seconds;
+         })
         if(seconds <= 0) {
             clearInterval(countdown);
             resetGame();
@@ -373,7 +379,7 @@ document.addEventListener('keydown', (e) => {
     updateCursor();
 
     //controleer letter 
-    if (Alphabet.includes(letter)){
+    if (alphabet.includes(letter)){
         checkGuess(letter);
     }
 });

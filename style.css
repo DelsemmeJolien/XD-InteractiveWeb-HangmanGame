@@ -43,6 +43,7 @@ h2, p{
     color: #E8E4F0;
 }
 
+
 .title{
     text-align: center;
     line-height: 0.50;
@@ -55,7 +56,6 @@ h2, p{
 #winTitle, #loseTitle {
     font-family: "Syne", sans-serif;
     font-size: 40px;
-
 }
 
 .mainEnd .word {
@@ -85,7 +85,6 @@ a {
     text-align: center;
     padding: 2rem;
 }
-
 
 .mainStart{
     display: flex;
@@ -187,7 +186,6 @@ a {
 .btnRestart{
     align-self: center;
     text-align: center;
-    display: inline-block;
     border-radius: 20px;
     margin: 1rem;
 }
@@ -261,6 +259,7 @@ a {
 .selexct {
     position: relative;
 }
+
 .select::after {
     content: '';
     position: absolute;
@@ -308,27 +307,23 @@ a {
     height: auto;
 }
 
-#hangman-head{
+.hangman-rope{
     display: none;
 }
 
-#hangman-body{
+.hangman-head{
     display: none;
 }
 
-#hangman-arm1{
+.hangman-body{
     display: none;
 }
 
-#hangman-arm2{
+.hangman-arms{
     display: none;
 }
 
-#hangman-leg1{
-    display: none;
-}
-
-#hangman-leg2{
+.hangman-legs{
     display: none;
 }
 
