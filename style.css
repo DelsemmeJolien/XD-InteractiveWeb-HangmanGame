@@ -221,6 +221,12 @@ a {
     margin: 0.5em 0 1em 0;
 }
 
+.detected-pose{
+    display: flex;
+    flex-direction: column;
+    
+}
+
 .btn{
     align-self: center;
     text-align: center;
@@ -374,8 +380,17 @@ a {
     display: none;
 }
 
-/* CAMERA */
+/* CAMERA INTRO*/
+.card-intro {
+    margin-top: 1em;
+    background: #1a1230;
+    border-radius: 16px;
+    padding: 14px;
+    height: 60%;
+    text-align: center;
+}
 
+/* CAMERA GAME*/
 .card {
     margin-top: 1em;
     background: #1a1230;
