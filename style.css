@@ -44,6 +44,18 @@ h2, p{
 }
 
 
+#tutorial {
+    display: none;
+}
+
+#win {
+    display: none;
+}
+
+#lose {
+    display: none;
+}
+
 .title{
     text-align: center;
     line-height: 0.50;
@@ -86,16 +98,29 @@ a {
     padding: 2rem;
 }
 
+.main{
+    width: 100%;
+    margin: 0 5em;
+}
+
 .mainStart{
     display: flex;
     flex-direction: row;
-    margin: 1em 8em;
+    gap: 5em;
+    width: 100%;
 }
 
 .mainGame{
     display: flex;
     flex-direction: row;
     margin: 0 2em;
+}
+
+.pose-instructions{
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+
 }
 
 .left-column{
@@ -166,12 +191,34 @@ a {
     background-color: hsla(0, 0%, 100%, 0.031);
     border: 1px solid  hsla(0, 0%, 100%, 0.103);
     border-radius: 22px;
-    display: inline;
+    display: block;
     margin: 0.5rem;
+    padding: 0 1em;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 
-.box p {
-    margin: 1rem;
+.icon{
+    color: whitesmoke;
+    width: 75px;
+    height: 75px;
+    align-content: center;
+    text-align: center;
+}
+
+.instructionPose {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+}
+
+.instructionPose h2 {
+    margin: 1em 0 0em 0;
+}
+
+.instructionPose p {
+    margin: 0.5em 0 1em 0;
 }
 
 .btn{
@@ -371,6 +418,34 @@ a {
     border-radius: 10px;
     overflow: hidden;
     width: 100%;
+}
+
+#tutorial-test {
+    width: 90%;
+    align-content: center;
+}
+
+/* PROGRESS BAR */
+.progress-bar {
+  width: 100%;
+  height: 4px;
+  background: #3D2A6E;
+  border-radius: 2px;
+  margin-bottom: 2em;
+}
+
+.progress-fill {
+  height: 4px;
+  background: #A084D8;
+  border-radius: 2px;
+  width: 20%; /* stap 1 van 5 = 20% */
+  transition: width 0.4s ease;
+}
+
+.step-counter {
+  font-size: 13px;
+  color: #A084D8;
+  margin-bottom: 1rem;
 }
 
 @keyframes borderFill {
