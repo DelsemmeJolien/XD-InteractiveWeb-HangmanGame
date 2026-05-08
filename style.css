@@ -223,8 +223,8 @@ a {
 
 .detected-pose{
     display: flex;
-    flex-direction: column;
-    
+    flex-direction: row;
+    justify-content: space-between;
 }
 
 .btn{
@@ -386,8 +386,16 @@ a {
     background: #1a1230;
     border-radius: 16px;
     padding: 14px;
-    height: 60%;
+    width: 580px;
+    height: 380px;
     text-align: center;
+}
+
+#camera-placeholder{
+    font-family: "Syne", sans-serif;
+    letter-spacing: 2px;
+    font-size: 16px;
+    color: #E8E4F0;
 }
 
 /* CAMERA GAME*/

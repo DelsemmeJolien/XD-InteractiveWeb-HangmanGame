@@ -13,6 +13,11 @@ let lastMoveTime = 0;
 let selectTimer = null;
 let currentPose = null;
 
+//CODE TUTORIAL SCREEN
+const totalSteps = 5;
+const isTutorial = document.querySelector("#tutorial-test") !== null; //check of we op tutorial screen zitten (aanwezigheid element)
+let tutorialTimer = null;
+let currentStep = 1;
 
 async function init() {
     const modelURL = URL + "model.json";
@@ -28,7 +33,7 @@ async function init() {
     //const size = 200;
     const flip = true; // whether to flip the webcam
     //webcam = new tmPose.Webcam(size, size, flip); // width, height, flip
-    webcam = new tmPose.Webcam(360, 240, flip); //16:9
+    webcam = new tmPose.Webcam(isTutorial ? 560 : 360 , isTutorial ? 340 : 240, flip); //16:9 is toturial true dan grote camera anders kleine camera
     await webcam.setup(); // request access to the webcam
     await webcam.play();
     window.requestAnimationFrame(loop);
@@ -37,8 +42,8 @@ async function init() {
     const canvas = document.getElementById("canvas");
     // canvas.width = size; 
     // canvas.height = size;
-    canvas.width = 360;
-    canvas.height = 240;
+    canvas.width = isTutorial ? 560 : 360;
+    canvas.height = isTutorial ? 340 : 240;
     ctx = canvas.getContext("2d");
     // labelContainer = document.getElementById("label-container");
     // for (let i = 0; i < maxPredictions; i++) { // and class labels
@@ -77,6 +82,27 @@ async function predict() {
     const poseName = best.probability > 0.90 ? best.className : null;
     console.log(poseName);
 
+    //CODE TUTORIAL SCREEN
+    const tutorialPoses = prediction.map(p => p.className); //verzamel classes in array
+    const expectedPose = tutorialPoses[currentStep - 1] //verwachte pose voor huidige stap
+
+    if( isTutorial && currentStep <= totalSteps){
+        if(poseName === expectedPose){ //als de gedetecteerde pose overeenkomt met de verwachte pose voor deze stap
+            if(!tutorialTimer){ //als timer nog niet gestart is -> starten
+                tutorialTimer = setTimeout(() => {
+                    // Timer afgesloten
+                    tutorialTimer = null;
+                    nextStep(); //ga naar volgende stap
+                }, 2000); // 2 seconden om pose uit te voeren
+            } else {
+                clearTimeout(tutorialTimer);
+                tutorialTimer = null; //als pose verandert -> timer resetten
+            }
+            return; //stop verdere code in predict functie, zodat pose alleen telt voor tutorial en niet voor game
+        }
+    }
+
+    if(!isTutorial){
     //verplaats cursor max 2 keer per sec
     const now = Date.now();
     if(now - lastMoveTime > cooldown){
@@ -100,26 +126,34 @@ async function predict() {
         }
     }
 
-    if(poseName === "Neutral"){
-        if (currentPose !== "Neutral") { //alleen als we net in Neutral komen en er nog geen timer loopt
-            currentPose = "Neutral"; //zet huidige pose neutraal
-            //letters[cursorIndex].classList.add("select"); //voeg hover/select state toe
-            console.log("select toegevoegd", letters[cursorIndex].classList); // ← tijdelijk
+    
+        if(poseName === "Neutral"){
+            if (currentPose !== "Neutral") { //alleen als we net in Neutral komen en er nog geen timer loopt
+                currentPose = "Neutral"; //zet huidige pose neutraal
+                //letters[cursorIndex].classList.add("select"); //voeg hover/select state toe
+                console.log("select toegevoegd", letters[cursorIndex].classList); // ← tijdelijk
 
-            selectTimer = setTimeout(() => {
+                selectTimer = setTimeout(() => {
+                    //letters[cursorIndex].parentElement.classList.remove("select"); //verwijder hover/select state
+                    checkGuess(letters[cursorIndex].dataset.letter); //functie uitvoeren uitstellen
+                    currentPose = null; //huidige pose terug naar null
+                    //selectTimer = null; //timer resetten
+                }, 2000); //voor uit na 2 sec
+            }
+        } else {
+                clearTimeout(selectTimer); //stop timer bij poseverandering
+                //selectTimer = null; //reset timer
                 //letters[cursorIndex].parentElement.classList.remove("select"); //verwijder hover/select state
-                checkGuess(letters[cursorIndex].dataset.letter); //functie uitvoeren uitstellen
-                currentPose = null; //huidige pose terug naar null
-                //selectTimer = null; //timer resetten
-            }, 2000); //voor uit na 2 sec
+                console.log("select verwijderd", letters[cursorIndex].classList); // ← tijdelijk
+                currentPose = poseName; //huidige pose opslagen
         }
-    } else {
-            clearTimeout(selectTimer); //stop timer bij poseverandering
-            //selectTimer = null; //reset timer
-            //letters[cursorIndex].parentElement.classList.remove("select"); //verwijder hover/select state
-            console.log("select verwijderd", letters[cursorIndex].classList); // ← tijdelijk
-            currentPose = poseName; //huidige pose opslagen
     }
+
+
+    //CODE TUTORIAL SCREEN
+    console.log(tutorialPoses);
+
+
     // finally draw the poses
     drawPose(pose);
 }
@@ -358,28 +392,48 @@ function resetGame(){
     showScreen("game");
 }
 
+//progessbar updaten tutorial
+function updateProgress(step) {
+  document.querySelector('#progress-fill').style.width = (step / totalSteps * 100) + '%';
+  document.querySelector('#step-counter').textContent = `Stap ${step} van ${totalSteps}`;
+}
+
+//volgende stap tutorial
+function nextStep() {
+  if (currentStep < totalSteps) {
+    currentStep++;
+    updateProgress(currentStep);
+  }
+}
+
+
 //TEACHABLE MACHINE STARTEN    
 init();
-getWord();
-showLives();
-updateCursor();
+
 
 //KEYBOARD CONTROLS
 document.addEventListener('keydown', (e) => {
     const letter = e.key.toUpperCase(); //ingedrukte letter -> hoofdletter
     //test welke arrow (key) wordt gebruikt
-    if (e.key === 'ArrowRight') { updateCursor(1);}
-    if (e.key === 'ArrowLeft') {updateCursor(-1);}
-    if (e.key === 'ArrowUp')  {updateCursor(-9);}
-    if (e.key === 'ArrowDown') { updateCursor(9);}
-    if (e.key === 'Enter') {
-        checkGuess(letters[cursorIndex].dataset.letter);
+    if (!isTutorial) {
+        if (e.key === 'ArrowRight') { updateCursor(1); }
+        if (e.key === 'ArrowLeft') { updateCursor(-1); }
+        if (e.key === 'ArrowUp') { updateCursor(-9); }
+        if (e.key === 'ArrowDown') { updateCursor(9); }
+        if (e.key === 'Enter') { checkGuess(letters[cursorIndex].dataset.letter); }
+        updateCursor();
+        if (alphabet.includes(letter)) { checkGuess(letter); }
     }
 
-    updateCursor();
 
-    //controleer letter 
-    if (alphabet.includes(letter)){
-        checkGuess(letter);
+    //turorial screen test
+    if (e.key === ' ') { // spatiebalk = volgende stap
+        nextStep();
     }
 });
+
+if (document.querySelector("#word-display")) {
+    getWord();
+    showLives();
+    updateCursor();
+}
