@@ -38,9 +38,7 @@ async function init() {
     maxPredictions = model.getTotalClasses();
 
     // Convenience function to setup a webcam
-    //const size = 200;
     const flip = true; // whether to flip the webcam
-    //webcam = new tmPose.Webcam(size, size, flip); // width, height, flip
     webcam = new tmPose.Webcam(activeScreen === "tutorial-test" ? 560 : 360 , activeScreen === "tutorial-test" ? 340 : 240, flip); //16:9 is toturial true dan grote camera anders kleine camera
     await webcam.setup(); // request access to the webcam
     await webcam.play();
@@ -48,15 +46,9 @@ async function init() {
 
     // append/get elements to the DOM
     const canvas = document.getElementById("canvas");
-    // canvas.width = size; 
-    // canvas.height = size;
     canvas.width = activeScreen === "tutorial-test" ? 560 : 360;
     canvas.height = activeScreen === "tutorial-test" ? 340 : 240;
     ctx = canvas.getContext("2d");
-    // labelContainer = document.getElementById("label-container");
-    // for (let i = 0; i < maxPredictions; i++) { // and class labels
-    //     labelContainer.appendChild(document.createElement("div"));
-    // }
 
     //placeholder vervangen
     document.getElementById('camera-placeholder').style.display = 'none';
@@ -77,20 +69,11 @@ async function predict() {
     // Prediction 2: run input through teachable machine classification model
     const prediction = await model.predict(posenetOutput);
 
-    //doorloopt klasses en toont tekst met %
-        // for (let i = 0; i < maxPredictions; i++) {
-        //     const classPrediction =
-        //         prediction[i].className + ": " + prediction[i].probability.toFixed(2);
-        //     labelContainer.childNodes[i].innerHTML = classPrediction;
-        // }
-
     //vergelijkt klassen en houde beste bij
     let best = prediction.reduce((a, b) => a.probability > b.probability ? a : b); 
     //meer dan 90% zeker -> gebruiken
     const poseName = best.probability > 0.90 ? best.className : null;
     console.log(poseName);
-
-
 
     //CODE TUTORIAL SCREEN
     if (activeScreen === "tutorial-test") {
@@ -100,7 +83,7 @@ async function predict() {
     const tutorialPoses = ["Right","Left", "Up", "Down", "Neutral",];//verzamel classes in array in de juiste volgorde
     const expectedPose = tutorialPoses[currentStep - 1] //verwachte pose voor huidige stap
 
-    if( activeScreen === "tutorial-test" && currentStep <= totalSteps){
+    if(activeScreen === "tutorial-test" && currentStep <= totalSteps){
         console.log("klasses:", tutorialPoses);
         console.log("verwachte pose:", expectedPose);
         
@@ -165,10 +148,8 @@ async function predict() {
         }
     }
 
-
     //CODE TUTORIAL SCREEN
     console.log(tutorialPoses);
-
 
     // finally draw the poses
     drawPose(pose);
@@ -447,11 +428,9 @@ function nextStep() {
   }
 }
 
-
 //TEACHABLE MACHINE STARTEN    
 init();
 showScreen("tutorial-test"); //start op tutorial screen
-
 
 //KEYBOARD CONTROLS
 document.addEventListener('keydown', (e) => {
@@ -466,7 +445,6 @@ document.addEventListener('keydown', (e) => {
         updateCursor();
         if (alphabet.includes(letter)) { checkGuess(letter); }
     }
-
 
     //turorial screen test
     if (e.key === ' ') { // spatiebalk = volgende stap

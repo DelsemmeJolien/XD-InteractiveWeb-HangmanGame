@@ -387,7 +387,6 @@ a {
     padding: 14px;
     width: 580px;
     height: 380px;
-    text-align: center;
 }
 
 #camera-placeholder{
@@ -395,6 +394,8 @@ a {
     letter-spacing: 2px;
     font-size: 16px;
     color: #E8E4F0;
+    display: block;
+    text-align: center;
 }
 
 /* CAMERA GAME*/
