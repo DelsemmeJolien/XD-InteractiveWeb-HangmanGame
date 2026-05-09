@@ -11,8 +11,86 @@
     <title>GAME - XD HANGMAN</title>
 </head>
 <body>
-    <section id="tutorial">
+    <section id="tutorial-test">
+        <div class="main">
+            <div class="title">
+                <h1>XD HANGMAN</h1>
+                <h2>POSE EDITION</h2>
+            </div>
 
+            <p class="step-counter" id="step-counter">Stap 1 van 5</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+
+            <h2 id="step-title">POSE: RIGHT</h2>
+            <p id="step-description">Stretch your arm to right to move your cursor to right.</p>
+
+            <div class="mainStart">
+                <div class="instructions">
+                    <div class="card-intro">
+                        <div class="camera-header">
+                            <h2>CAMERA</h2>
+                            <div class="camera-dot" id="camera-dot"></div>
+                        </div>
+                        <div class="camera-screen" id="camera-screen"></div>
+                        <canvas id="canvas"></canvas>
+                        <span class="camera-placeholder" id="camera-placeholder">laden...</span>
+                    </div>
+                        <div class="detected-pose">
+                            <p>DETECTED POSE: </p>
+                            <p id="current-pose">LEFT</p>
+                        </div>
+                </div>
+                <div class="pose-instructions" >
+                    <div class="box active" id="pose-1">
+                        <div class="icon">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </div>
+                        <div class="instructionPose">
+                            <h2>RIGHT</h2>
+                            <p>Stretch your arm to right to move your cursor to right</p>
+                        </div>
+                    </div>
+                    <div class="box" id="pose-2">
+                        <div class="icon">
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </div>
+                        <div class="instructionPose">
+                            <h2>LEFT</h2>
+                            <p>Stretch your arm to left to move your cursor to left</p>
+                        </div>
+                    </div>
+                    <div class="box" id="pose-3">
+                        <div class="icon">
+                            <i class="fa-solid fa-arrow-up"></i>
+                        </div>
+                        <div class="instructionPose">
+                            <h2>UP</h2>
+                            <p>Stretch your both arms straight above your head to move your cursor up</p>
+                        </div>
+                    </div>
+                    <div class="box" id="pose-4">
+                        <div class="icon">
+                            <i class="fa-solid fa-arrow-down"></i>
+                        </div>
+                        <div class="instructionPose">
+                            <h2>DOWN</h2>
+                            <p>Stretch your both arm down in a downwards V to move your cursor down</p>
+                        </div>
+                    </div>
+                    <div class="box" id="pose-5">
+                        <div class="icon">
+                            <i class="fa-solid fa-minus"></i>
+                        </div>
+                        <div class="instructionPose">
+                            <h2>NEUTRAL</h2>
+                            <p>Keep both arms straight beside you body to select a letter.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
     
     <section id="game">

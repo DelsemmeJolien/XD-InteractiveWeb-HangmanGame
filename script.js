@@ -14,8 +14,16 @@ let selectTimer = null;
 let currentPose = null;
 
 //CODE TUTORIAL SCREEN
+const tutorialInfo = [
+    { title: "POSE: RIGHT", description: "Stretch your arm to right to move your cursor right." },
+    { title: "POSE: LEFT", description: "Stretch your arm to left to move your cursor left." },
+    { title: "POSE: UP", description: "Stretch your both arms straight above your head to move your cursor up." },
+    { title: "POSE: DOWN", description: "Stretch your both arm down in a downwards V to move your cursor down." },
+    { title: "POSE: NEUTRAL", description: "Keep both arms straight beside you body to select a letter." }
+];
 const totalSteps = 5;
-const isTutorial = document.querySelector("#tutorial-test") !== null; //check of we op tutorial screen zitten (aanwezigheid element)
+//const isTutorial = document.querySelector("#tutorial-test") !== null; //check of we op tutorial screen zitten (aanwezigheid element)
+let activeScreen = "tutorial-test"; //default waarde
 let tutorialTimer = null;
 let currentStep = 1;
 
@@ -33,7 +41,7 @@ async function init() {
     //const size = 200;
     const flip = true; // whether to flip the webcam
     //webcam = new tmPose.Webcam(size, size, flip); // width, height, flip
-    webcam = new tmPose.Webcam(isTutorial ? 560 : 360 , isTutorial ? 340 : 240, flip); //16:9 is toturial true dan grote camera anders kleine camera
+    webcam = new tmPose.Webcam(activeScreen === "tutorial-test" ? 560 : 360 , activeScreen === "tutorial-test" ? 340 : 240, flip); //16:9 is toturial true dan grote camera anders kleine camera
     await webcam.setup(); // request access to the webcam
     await webcam.play();
     window.requestAnimationFrame(loop);
@@ -42,8 +50,8 @@ async function init() {
     const canvas = document.getElementById("canvas");
     // canvas.width = size; 
     // canvas.height = size;
-    canvas.width = isTutorial ? 560 : 360;
-    canvas.height = isTutorial ? 340 : 240;
+    canvas.width = activeScreen === "tutorial-test" ? 560 : 360;
+    canvas.height = activeScreen === "tutorial-test" ? 340 : 240;
     ctx = canvas.getContext("2d");
     // labelContainer = document.getElementById("label-container");
     // for (let i = 0; i < maxPredictions; i++) { // and class labels
@@ -82,11 +90,20 @@ async function predict() {
     const poseName = best.probability > 0.90 ? best.className : null;
     console.log(poseName);
 
+
+
     //CODE TUTORIAL SCREEN
-    const tutorialPoses = prediction.map(p => p.className); //verzamel classes in array
+    if (activeScreen === "tutorial-test") {
+        document.querySelector("#current-pose").innerHTML = poseName ?? '—';
+    }
+
+    const tutorialPoses = ["Right","Left", "Up", "Down", "Neutral",];//verzamel classes in array in de juiste volgorde
     const expectedPose = tutorialPoses[currentStep - 1] //verwachte pose voor huidige stap
 
-    if( isTutorial && currentStep <= totalSteps){
+    if( activeScreen === "tutorial-test" && currentStep <= totalSteps){
+        console.log("klasses:", tutorialPoses);
+        console.log("verwachte pose:", expectedPose);
+        
         if(poseName === expectedPose){ //als de gedetecteerde pose overeenkomt met de verwachte pose voor deze stap
             if(!tutorialTimer){ //als timer nog niet gestart is -> starten
                 tutorialTimer = setTimeout(() => {
@@ -102,31 +119,30 @@ async function predict() {
         }
     }
 
-    if(!isTutorial){
+    if(activeScreen !== "tutorial-test"){
     //verplaats cursor max 2 keer per sec
-    const now = Date.now();
-    if(now - lastMoveTime > cooldown){
-        //beweeg cursor op basis van poses (klasses)
-        //zet last move naar nu
-        if (poseName === "Left") {
-            updateCursor(-1);
-            lastMoveTime = now; 
+        const now = Date.now();
+        if(now - lastMoveTime > cooldown){
+            //beweeg cursor op basis van poses (klasses)
+            //zet last move naar nu
+            if (poseName === "Left") {
+                updateCursor(-1);
+                lastMoveTime = now; 
+            }
+            if (poseName === "Right") {
+                updateCursor(1);
+                lastMoveTime = now;
+            }
+            if (poseName === "Up") {
+                updateCursor(-9);
+                lastMoveTime = now;
+            }
+            if (poseName === "Down") {
+                updateCursor(9);
+                lastMoveTime = now;
+            }
         }
-        if (poseName === "Right") {
-            updateCursor(1);
-            lastMoveTime = now;
-        }
-        if (poseName === "Up") {
-            updateCursor(-9);
-            lastMoveTime = now;
-        }
-        if (poseName === "Down") {
-            updateCursor(9);
-            lastMoveTime = now;
-        }
-    }
 
-    
         if(poseName === "Neutral"){
             if (currentPose !== "Neutral") { //alleen als we net in Neutral komen en er nog geen timer loopt
                 currentPose = "Neutral"; //zet huidige pose neutraal
@@ -176,7 +192,7 @@ function drawPose(pose) {
 
 const word = "EMPATHY";
 const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-const letters = document.querySelectorAll(".letter");
+let letters;
 const hangman = [
     'hangman-rope',
     'hangman-head',
@@ -238,6 +254,8 @@ function updateHangman(){
 
 //default waarde positie is 0
 function updateCursor(position = 0){
+    letters = document.querySelectorAll(".letter");
+
     if(position !== 0){
         let newIndex = cursorIndex + position; //nieuwe positie
 
@@ -311,6 +329,12 @@ function showScreen(id){
         section.style.display = "none";
     });
     document.querySelector(`#${id}`).style.display = "block";
+    activeScreen = id;
+
+    if (id === "game") {
+        letters = document.querySelectorAll(".letter");
+        updateCursor();
+    }
 }
 
 function saveScores(){
@@ -365,6 +389,8 @@ function restartGame(){
 }
 
 function resetGame(){
+    letters = document.querySelectorAll(".letter");
+
     // Variabelen resetten
     guessedLetter = new Set();
     countWrong = 0;
@@ -389,7 +415,7 @@ function resetGame(){
     updateCursor();
 
     // Naar game scherm
-    showScreen("game");
+    showScreen("tutorial-test");
 }
 
 //progessbar updaten tutorial
@@ -403,19 +429,35 @@ function nextStep() {
   if (currentStep < totalSteps) {
     currentStep++;
     updateProgress(currentStep);
+
+    //update titel en beschrijving
+    let info = tutorialInfo[currentStep - 1];
+    document.querySelector('#step-title').innerHTML = info.title;
+    document.querySelector('#step-description').innerHTML = info.description;
+
+    //active state op huidige pose in tutorial zetten
+    document.querySelectorAll(".pose-instructions .box").forEach(box => {
+        box.classList.remove("active");
+    });
+    document.querySelector(`#pose-${currentStep}`).classList.add("active");
+    console.log("volgende stap:", currentStep);
+
+  } else{
+    showScreen("game"); // Tutorial voltooid, ga naar game scherm
   }
 }
 
 
 //TEACHABLE MACHINE STARTEN    
 init();
+showScreen("tutorial-test"); //start op tutorial screen
 
 
 //KEYBOARD CONTROLS
 document.addEventListener('keydown', (e) => {
     const letter = e.key.toUpperCase(); //ingedrukte letter -> hoofdletter
     //test welke arrow (key) wordt gebruikt
-    if (!isTutorial) {
+    if (activeScreen !== "tutorial-test") {
         if (e.key === 'ArrowRight') { updateCursor(1); }
         if (e.key === 'ArrowLeft') { updateCursor(-1); }
         if (e.key === 'ArrowUp') { updateCursor(-9); }
