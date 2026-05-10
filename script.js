@@ -6,14 +6,14 @@
 const URL = "./mymodel/";
 let model, webcam, ctx, labelContainer, maxPredictions;
 
-/* VARIABELEN VOOR TEACHABLE MACHIN-POSES */
+/* -------- VARIABELEN VOOR TEACHABLE MACHINE-POSES -------- */
 const cooldown = 500; //milliseconden
 
 let lastMoveTime = 0;
 let selectTimer = null;
 let currentPose = null;
 
-//CODE TUTORIAL SCREEN
+/* -------- VARIABELEN INTRO/TUTORIAL SCREEN -------- */
 const tutorialInfo = [
     { title: "POSE: RIGHT", description: "Stretch your arm to right to move your cursor right." },
     { title: "POSE: LEFT", description: "Stretch your arm to left to move your cursor left." },
@@ -22,11 +22,30 @@ const tutorialInfo = [
     { title: "POSE: NEUTRAL", description: "Keep both arms straight beside you body to select a letter." }
 ];
 const totalSteps = 5;
-//const isTutorial = document.querySelector("#tutorial-test") !== null; //check of we op tutorial screen zitten (aanwezigheid element)
+
 let activeScreen = "tutorial-test"; //default waarde
 let tutorialTimer = null;
 let currentStep = 1;
 
+/* -------- VARIABELEN GAME SCREEN -------- */
+const word = "EMPATHY";
+const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const hangman = [
+    'hangman-rope',
+    'hangman-head',
+    'hangman-body',
+    'hangman-arms',
+    'hangman-legs'
+]
+
+let letters;
+let guessedLetter = new Set();
+let maxWrong = 5;
+let countWrong = 0;
+let cursorIndex = 0;
+let countdown = null;
+
+/* -------- FUNCTIES TEACHABLE MACHINE -------- */
 async function init() {
     const modelURL = URL + "model.json";
     const metadataURL = URL + "metadata.json";
@@ -41,7 +60,6 @@ async function init() {
     const canvasId = activeScreen === "tutorial-test" ? "canvas-tutorial" : "canvas";
     const placeholderId = activeScreen === "tutorial-test" ? "camera-placeholder-tutorial" : "camera-placeholder";
     const dotId = activeScreen === "tutorial-test" ? "camera-dot-tutorial" : "camera-dot";
-
 
     // Convenience function to setup a webcam
     const flip = true; // whether to flip the webcam
@@ -79,7 +97,6 @@ async function predict() {
     let best = prediction.reduce((a, b) => a.probability > b.probability ? a : b); 
     //meer dan 90% zeker -> gebruiken
     const poseName = best.probability > 0.90 ? best.className : null;
-    console.log(poseName);
 
     //CODE TUTORIAL SCREEN
     if (activeScreen === "tutorial-test") {
@@ -90,9 +107,6 @@ async function predict() {
     const expectedPose = tutorialPoses[currentStep - 1] //verwachte pose voor huidige stap
 
     if(activeScreen === "tutorial-test" && currentStep <= totalSteps){
-        console.log("klasses:", tutorialPoses);
-        console.log("verwachte pose:", expectedPose);
-        
         if(poseName === expectedPose){ //als de gedetecteerde pose overeenkomt met de verwachte pose voor deze stap
             if(!tutorialTimer){ //als timer nog niet gestart is -> starten
                 tutorialTimer = setTimeout(() => {
@@ -139,29 +153,18 @@ async function predict() {
         if(poseName === "Neutral"){
             if (currentPose !== "Neutral") { //alleen als we net in Neutral komen en er nog geen timer loopt
                 currentPose = "Neutral"; //zet huidige pose neutraal
-                //letters[cursorIndex].classList.add("select"); //voeg hover/select state toe
-                console.log("select toegevoegd", letters[cursorIndex].classList); // ← tijdelijk
-
                 selectTimer = setTimeout(() => {
-                    //letters[cursorIndex].parentElement.classList.remove("select"); //verwijder hover/select state
                     checkGuess(letters[cursorIndex].dataset.letter); //functie uitvoeren uitstellen
                     currentPose = null; //huidige pose terug naar null
-                    //selectTimer = null; //timer resetten
                 }, 2000); //voor uit na 2 sec
             }
         } else {
-                clearTimeout(selectTimer); //stop timer bij poseverandering
-                //selectTimer = null; //reset timer
-                //letters[cursorIndex].parentElement.classList.remove("select"); //verwijder hover/select state
-                console.log("select verwijderd", letters[cursorIndex].classList); // ← tijdelijk
-                currentPose = poseName; //huidige pose opslagen
+            clearTimeout(selectTimer); //stop timer bij poseverandering
+            currentPose = poseName; //huidige pose opslagen
         }
     }
 
-    //CODE TUTORIAL SCREEN
-    console.log(tutorialPoses);
-
-    // finally draw the poses
+    //finally draw the poses
     drawPose(pose);
 }
 
@@ -177,29 +180,37 @@ function drawPose(pose) {
     }
 }
 
-//CODE GAME
+/* -------- FUNCTIES INTRO/TUTORIAL SCREEN -------- */
 
-//VARIABLES
+function updateProgress(step) { //progressbar en step counter updaten
+  document.querySelector('#progress-fill').style.width = (step / totalSteps * 100) + '%';
+  document.querySelector('#step-counter').textContent = `Stap ${step} van ${totalSteps}`;
+}
 
-const word = "EMPATHY";
-const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-let letters;
-const hangman = [
-    'hangman-rope',
-    'hangman-head',
-    'hangman-body',
-    'hangman-arms',
-    'hangman-legs'
-]
+function nextStep() { //volgende stap tutorial
+    if (currentStep < totalSteps) {
+        currentStep++;
+        updateProgress(currentStep);
 
-let guessedLetter = new Set();
-let maxWrong = 5;
-let countWrong = 0;
-let cursorIndex = 0;
-let countdown = null;
+        //update titel en beschrijving
+        let info = tutorialInfo[currentStep - 1];
+        document.querySelector('#step-title').innerHTML = info.title;
+        document.querySelector('#step-description').innerHTML = info.description;
 
-//FUNCTIES
-function getWord(){
+        //active state op huidige pose in tutorial zetten
+        document.querySelectorAll(".pose-instructions .box").forEach(box => {
+            box.classList.remove("active");
+        });
+        document.querySelector(`#pose-${currentStep}`).classList.add("active");
+
+    } else{
+        showScreen("game"); // Tutorial voltooid, ga naar game scherm
+    }
+}
+
+/* -------- FUNCTIES GAME SCREEN -------- */
+
+function getWord(){ //woord weergeven als lege vakjes
     let wordDisplay = document.querySelector("#word-display");
     wordDisplay.innerHTML = '';
 
@@ -210,7 +221,7 @@ function getWord(){
     });
 }
 
-function showLetter(letter){
+function showLetter(letter){ //letter tonen als deze geraden is
     document.querySelectorAll(".letterWord").forEach(letterWord => {
         if (letterWord.dataset.letter === letter){
             letterWord.innerHTML = letter;
@@ -218,7 +229,7 @@ function showLetter(letter){
     })
 }
 
-function showLives(){
+function showLives(){ //levens weergeven
     const displayLives = document.querySelector("#lives-display");
     displayLives.innerHTML = '';
 
@@ -233,18 +244,111 @@ function showLives(){
     }
 }
 
-function updateLives(){
+function updateLives(){ //levens updaten na fout gok
     showLives();
 }
 
-function updateHangman(){
+function updateHangman(){ //hangman tonen na fout gok
     document.querySelectorAll(`.${hangman[countWrong-1]}`).forEach(bodypart => {
         bodypart.style.display = 'inline';
     });
 }
 
-//default waarde positie is 0
-function updateCursor(position = 0){
+function checkGuess(letter) { //controleer of geraden letter in woord zit -> update scherm ?
+    if (guessedLetter.has(letter)) return; //als letter al in set zit (geraden is) -> stop/return
+    guessedLetter.add(letter); //voeg letter toe aan set
+
+    let keyLetter = document.querySelector(`.letter[data-letter="${letter}"]`)
+
+    if(word.includes(letter)){
+        showLetter(letter); //bevat woord letter? -> toon letter
+        keyLetter.classList.add("correct"); //voeg opmaak toe
+    } else {
+        countWrong++; //add voeg
+        updateLives(); //remove live
+        updateHangman(); //add hangman bodypart
+        keyLetter.classList.add("wrong"); //voeg opmaak toe
+    }
+
+    //check of game voorbij is (win, lose of doorgaan)
+    checkGameOver();
+}
+
+function checkGameOver(){ //controleer of game voorbij is (win, lose of doorgaan)
+    const win = word.split('').every(letter => guessedLetter.has(letter)); //als elke letter van het woord in de set letters zit
+    const lose = countWrong >= maxWrong;
+
+    if(win) {
+        saveScores();
+        showScreen("win");
+
+    } else if(lose){
+        saveScores();
+        showScreen("lose");
+    }
+}
+
+function saveScores(){ //bewaar scores in local storage en update ranglijst
+    let livesLeft = maxWrong - countWrong;
+
+    //huidige score bewaren
+    localStorage.setItem ("livesLeft", livesLeft);
+    localStorage.setItem("lettersGuessed", guessedLetter.size);
+
+    //score opslagen in ranglijst
+    const scores = JSON.parse(localStorage.getItem("scores") || "[]");
+    scores.push(livesLeft);
+    localStorage.setItem("scores", JSON.stringify(scores));
+
+    //test
+    const sortedScores = scores.sort((a, b) => b - a); //sorteren van hoog naar laag
+    const rang = sortedScores.indexOf(parseInt(livesLeft)) + 1; //rang bepalen van huidige score
+
+    //in html plaatsen
+    document.querySelectorAll(".lives-left").forEach(element => {
+    element.innerHTML = livesLeft;
+    });
+    document.querySelectorAll(".guessed-letters").forEach(element => {
+        element.innerHTML = guessedLetter.size;
+    });
+    document.querySelector(".ranking-win").innerHTML = rangName(rang);
+    document.querySelector(".ranking-lose").innerHTML = "Last";
+
+    // Timer starten en naar intro
+    restartGame();
+
+}
+
+/* -------- FUNCTIES WIN/LOSE -------- */
+function rangName(rang) { //toon plaats rang op basis van rangnummer
+    if(rang === 1) {
+        return "1ste";
+    } 
+    return `${rang}de`;
+}
+
+function restartGame(){ //timer starten voor terug naar intro
+    let seconds = 90;
+    let timer = document.querySelectorAll(".timer");
+    timer.forEach(t => {
+        t.innerHTML = seconds;
+    })
+
+    countdown = setInterval(() => {
+        seconds--;
+        timer.forEach(t => {
+            t.innerHTML = seconds;
+         })
+        if(seconds <= 0) {
+            clearInterval(countdown);
+            resetGame();
+        }
+    }, 1000);
+}
+
+/* -------- FUNCTIES ALGEMEEN -------- */
+
+function updateCursor(position = 0){ //verplaas cursor op basis van positie (1 = rechts, -1 = links, 9 = onder, -9 = boven)
     letters = document.querySelectorAll(".letter");
 
     if(position !== 0){
@@ -272,50 +376,7 @@ function updateCursor(position = 0){
     letters[cursorIndex].classList.add("active");
 }
 
-function checkGuess(letter) {
-    if (guessedLetter.has(letter)) return; //als letter al in set zit (geraden is) -> stop/return
-    guessedLetter.add(letter); //voeg letter toe aan set
-
-    let keyLetter = document.querySelector(`.letter[data-letter="${letter}"]`)
-
-    if(word.includes(letter)){
-        showLetter(letter); //bevat woord letter? -> toon letter
-        keyLetter.classList.add("correct"); //voeg opmaak toe
-        console.log(letter + "-> juist gegokt");
-    } else {
-        countWrong++; //add voeg
-        updateLives(); //remove live
-        updateHangman(); //add hangman bodypart
-        keyLetter.classList.add("wrong"); //voeg opmaak toe
-        console.log(letter + "-> FOUT gegokt");
-    }
-
-    //check of game voorbij is (win, lose of doorgaan)
-    checkGameOver();
-}
-
-function rangName(rang) {
-    if(rang === 1) {
-        return "1ste";
-    } 
-    return `${rang}de`;
-}
-
-function checkGameOver(){
-    const win = word.split('').every(letter => guessedLetter.has(letter)); //als elke letter van het woord in de set letters zit
-    const lose = countWrong >= maxWrong;
-
-    if(win) {
-        saveScores();
-        showScreen("win");
-
-    } else if(lose){
-        saveScores();
-        showScreen("lose");
-    }
-}
-
-function showScreen(id){
+function showScreen(id){ //toon juiste scherm en verberg andere schermen
     document.querySelectorAll("section").forEach(section => {
         section.style.display = "none";
     });
@@ -329,60 +390,13 @@ function showScreen(id){
         updateCursor();
         init(); // camera starten voor game
     }
+
+    if (id === "win" || id === "lose") {
+        if (webcam) webcam.playing = false; //stop webcam bij win of lose
+    }
 }
 
-function saveScores(){
-    let livesLeft = maxWrong - countWrong;
-
-    //huidige score bewaren
-    localStorage.setItem ("livesLeft", livesLeft);
-    localStorage.setItem("lettersGuessed", guessedLetter.size);
-
-    //score opslagen in ranglijst
-    const scores = JSON.parse(localStorage.getItem("scores") || "[]");
-    scores.push(livesLeft);
-    console.log("score pushed");
-    localStorage.setItem("scores", JSON.stringify(scores));
-
-    //test
-    const sortedScores = scores.sort((a, b) => b - a); //sorteren van hoog naar laag
-    const rang = sortedScores.indexOf(parseInt(livesLeft)) + 1; //rang bepalen van huidige score
-
-    //in html plaatsen
-    document.querySelectorAll(".lives-left").forEach(element => {
-    element.innerHTML = livesLeft;
-    });
-    document.querySelectorAll(".guessed-letters").forEach(element => {
-        element.innerHTML = guessedLetter.size;
-    });
-    document.querySelector(".ranking-win").innerHTML = rangName(rang);
-    document.querySelector(".ranking-lose").innerHTML = "Last";
-
-    // Timer starten en naar intro
-    restartGame();
-
-}
-
-function restartGame(){
-    let seconds = 90;
-    let timer = document.querySelectorAll(".timer");
-    timer.forEach(t => {
-        t.innerHTML = seconds;
-    })
-
-    countdown = setInterval(() => {
-        seconds--;
-        timer.forEach(t => {
-            t.innerHTML = seconds;
-         })
-        if(seconds <= 0) {
-            clearInterval(countdown);
-            resetGame();
-        }
-    }, 1000);
-}
-
-function resetGame(){
+function resetGame(){ //reset alle variabelen en schermen voor een nieuw spel
     letters = document.querySelectorAll(".letter");
 
     // Variabelen resetten
@@ -390,12 +404,22 @@ function resetGame(){
     countWrong = 0;
     cursorIndex = 0;
 
+    // Tutorial resetten
+    currentStep = 1;
+    updateProgress(1);
+    document.querySelector('#step-title').innerHTML = tutorialInfo[0].title;
+    document.querySelector('#step-description').innerHTML = tutorialInfo[0].description;
+    document.querySelectorAll(".pose-instructions .box").forEach(box => box.classList.remove("active"));
+    document.querySelector('#pose-1').classList.add("active");
+
     // Timer stoppen
     if(countdown) clearInterval(countdown);
 
     // Hangman verbergen
     hangman.forEach(part => {
-        document.querySelector(`#${part}`).style.display = 'none';
+        document.querySelectorAll(`.${part}`).forEach(bodypart =>{
+            bodypart.style.display = 'none';
+        });
     });
 
     // Keyboard resetten
@@ -410,46 +434,17 @@ function resetGame(){
 
     // Naar game scherm
     showScreen("tutorial-test");
+    init();
 }
 
-//progessbar updaten tutorial
-function updateProgress(step) {
-  document.querySelector('#progress-fill').style.width = (step / totalSteps * 100) + '%';
-  document.querySelector('#step-counter').textContent = `Stap ${step} van ${totalSteps}`;
-}
-
-//volgende stap tutorial
-function nextStep() {
-  if (currentStep < totalSteps) {
-    currentStep++;
-    updateProgress(currentStep);
-
-    //update titel en beschrijving
-    let info = tutorialInfo[currentStep - 1];
-    document.querySelector('#step-title').innerHTML = info.title;
-    document.querySelector('#step-description').innerHTML = info.description;
-
-    //active state op huidige pose in tutorial zetten
-    document.querySelectorAll(".pose-instructions .box").forEach(box => {
-        box.classList.remove("active");
-    });
-    document.querySelector(`#pose-${currentStep}`).classList.add("active");
-    console.log("volgende stap:", currentStep);
-
-  } else{
-    showScreen("game"); // Tutorial voltooid, ga naar game scherm
-  }
-}
-
-//TEACHABLE MACHINE STARTEN    
+/* -------- START CODE & EVENT LISTENER VOOR KEYBOARD INPUT  -------- */ 
 showScreen("tutorial-test"); //start op tutorial screen
 init();
 
-//KEYBOARD CONTROLS
 document.addEventListener('keydown', (e) => {
     const letter = e.key.toUpperCase(); //ingedrukte letter -> hoofdletter
     //test welke arrow (key) wordt gebruikt
-    if (activeScreen !== "tutorial-test") {
+    if (activeScreen === "game") {
         if (e.key === 'ArrowRight') { updateCursor(1); }
         if (e.key === 'ArrowLeft') { updateCursor(-1); }
         if (e.key === 'ArrowUp') { updateCursor(-9); }
@@ -464,9 +459,3 @@ document.addEventListener('keydown', (e) => {
         nextStep();
     }
 });
-
-if (document.querySelector("#word-display")) {
-    getWord();
-    showLives();
-    updateCursor();
-}
