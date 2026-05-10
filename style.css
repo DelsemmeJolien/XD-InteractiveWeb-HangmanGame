@@ -389,7 +389,7 @@ a {
     height: 380px;
 }
 
-#camera-placeholder{
+#camera-placeholder, #camera-placeholder-tutorial {
     font-family: "Syne", sans-serif;
     letter-spacing: 2px;
     font-size: 16px;

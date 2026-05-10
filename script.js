@@ -37,6 +37,12 @@ async function init() {
     model = await tmPose.load(modelURL, metadataURL);
     maxPredictions = model.getTotalClasses();
 
+    //const webcams
+    const canvasId = activeScreen === "tutorial-test" ? "canvas-tutorial" : "canvas";
+    const placeholderId = activeScreen === "tutorial-test" ? "camera-placeholder-tutorial" : "camera-placeholder";
+    const dotId = activeScreen === "tutorial-test" ? "camera-dot-tutorial" : "camera-dot";
+
+
     // Convenience function to setup a webcam
     const flip = true; // whether to flip the webcam
     webcam = new tmPose.Webcam(activeScreen === "tutorial-test" ? 560 : 360 , activeScreen === "tutorial-test" ? 340 : 240, flip); //16:9 is toturial true dan grote camera anders kleine camera
@@ -45,15 +51,15 @@ async function init() {
     window.requestAnimationFrame(loop);
 
     // append/get elements to the DOM
-    const canvas = document.getElementById("canvas");
+    const canvas = document.getElementById(canvasId);
     canvas.width = activeScreen === "tutorial-test" ? 560 : 360;
     canvas.height = activeScreen === "tutorial-test" ? 340 : 240;
     ctx = canvas.getContext("2d");
 
     //placeholder vervangen
-    document.getElementById('camera-placeholder').style.display = 'none';
+    document.getElementById(placeholderId).style.display = 'none';
     //camera dot actief zetten
-    document.getElementById('camera-dot').classList.add('active');
+    document.getElementById(dotId).classList.add('active');
 }
 
 async function loop(timestamp) {
@@ -314,7 +320,10 @@ function showScreen(id){
 
     if (id === "game") {
         letters = document.querySelectorAll(".letter");
+        getWord();
+        showLives();
         updateCursor();
+        init(); // camera starten voor game
     }
 }
 
@@ -429,8 +438,8 @@ function nextStep() {
 }
 
 //TEACHABLE MACHINE STARTEN    
-init();
 showScreen("tutorial-test"); //start op tutorial screen
+init();
 
 //KEYBOARD CONTROLS
 document.addEventListener('keydown', (e) => {
