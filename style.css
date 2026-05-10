@@ -220,10 +220,14 @@ a {
     margin: 0.5em 0 1em 0;
 }
 
-.detected-pose{
+.detected-pose, .detected-pose-game{
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+}
+
+.detected-pose-game p, .detected-pose p{
+    margin: 0.5em 1em 0 1em;
 }
 
 .btn{
@@ -268,11 +272,28 @@ a {
     flex-direction: row;
     gap: 1.5em;
 }
+
 .lettersWord div{
     padding: 0 0.5em;
-    border-bottom: 5px solid #B89FD8;
-    min-height: 5em;
-    min-width: 2.5em
+    min-height: 4.5em;
+    min-width: 3em;
+    position: relative;
+}
+
+.lettersWord div::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: #7B5EA7;
+    border-radius: 10px;
+}
+
+.lettersWord div:has(.letterWord:not(:empty))::after {
+    background: #B89FD8;
+    
 }
 
 /* KEYBOARD */
@@ -386,7 +407,6 @@ a {
     border-radius: 16px;
     padding: 14px;
     width: 580px;
-    height: 380px;
 }
 
 #camera-placeholder, #camera-placeholder-tutorial {
@@ -412,7 +432,7 @@ a {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 10px;
+    margin: 0 0.5em 0.5em;
 }
 
 .camera-header h2 {
@@ -441,6 +461,10 @@ a {
     border-radius: 10px;
     overflow: hidden;
     width: 100%;
+}
+
+#canvas-tutorial {
+    margin: 0.5em;
 }
 
 #tutorial-test {

@@ -108,6 +108,10 @@ async function predict() {
         }
     }
 
+    if (activeScreen === "game") {
+        document.querySelector('#current-pose-game').textContent = poseName ?? '—';
+    }   
+
     if(activeScreen !== "tutorial-test"){
     //verplaats cursor max 2 keer per sec
         const now = Date.now();
