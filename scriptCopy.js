@@ -80,18 +80,9 @@ async function init() {
     document.getElementById(dotId).classList.add('active');
 }
 
-let lastPredict = 0;
-const predictInterval = 200; //milliseconden
-
 async function loop(timestamp) {
     webcam.update(); // update the webcam frame
-
-    if(timestamp - lastPredict > predictInterval) {
-        lastPredict = timestamp;
-        await predict();
-    } else {
-        drawPose(); //teken pose zonder nieuwe voorspelling
-    }
+    await predict();
     window.requestAnimationFrame(loop);
 }
 
@@ -123,12 +114,11 @@ async function predict() {
                     tutorialTimer = null;
                     nextStep(); //ga naar volgende stap
                 }, 2000); // 2 seconden om pose uit te voeren
-            } 
-        } else {
-            if(tutorialTimer){ //als pose verandert voordat timer afgelopen is -> timer resetten
+            } else {
                 clearTimeout(tutorialTimer);
                 tutorialTimer = null; //als pose verandert -> timer resetten
             }
+            return; //stop verdere code in predict functie, zodat pose alleen telt voor tutorial en niet voor game
         }
     }
 
