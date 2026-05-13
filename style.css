@@ -1,10 +1,3 @@
-/* variabelen in de browser voor animatie border letter */
-@property --progress {
-    syntax: "<percentage>"; /* type -> % */
-    inherits: false; /* niet overerven van parent */
-    initial-value: 0%; /* startwaarde */
-}
-
 .jersey-10-regular {
   font-family: "Jersey 10", sans-serif;
   font-weight: 400;
@@ -493,9 +486,4 @@ a {
   font-size: 13px;
   color: #A084D8;
   margin-bottom: 1rem;
-}
-
-@keyframes borderFill {
-    from { --progress: 0%; }
-    to { --progress: 100%; }
 }
