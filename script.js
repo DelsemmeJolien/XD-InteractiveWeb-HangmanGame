@@ -7,11 +7,13 @@ const URL = "./mymodel/";
 let model, webcam, ctx, labelContainer, maxPredictions;
 
 /* -------- VARIABELEN VOOR TEACHABLE MACHINE-POSES -------- */
-const cooldown = 500; //milliseconden
+const cooldown = 500;
+const predictInterval = 200;
 
 let lastMoveTime = 0;
 let selectTimer = null;
 let currentPose = null;
+let lastPredict = 0;
 
 /* -------- VARIABELEN INTRO/TUTORIAL SCREEN -------- */
 const tutorialInfo = [
@@ -80,8 +82,7 @@ async function init() {
     document.getElementById(dotId).classList.add('active');
 }
 
-let lastPredict = 0;
-const predictInterval = 200; //milliseconden
+
 
 async function loop(timestamp) {
     webcam.update(); // update the webcam frame
