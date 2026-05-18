@@ -32,3 +32,6 @@ Before each game, a tutorial screen walks you through each pose. Hold the correc
 ## Course Context
  
 Built as a project for the XD (Digital Experience Design) programme.
+
+## YouTube Video
+https://youtu.be/zeOdJAFek8o
