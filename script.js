@@ -23,7 +23,7 @@ const tutorialInfo = [
 ];
 const totalSteps = 5;
 
-let activeScreen = "tutorial-test"; //default waarde
+let activeScreen = "intro"; //default waarde
 let tutorialTimer = null;
 let currentStep = 1;
 
@@ -57,21 +57,21 @@ async function init() {
     maxPredictions = model.getTotalClasses();
 
     //const webcams
-    const canvasId = activeScreen === "tutorial-test" ? "canvas-tutorial" : "canvas";
-    const placeholderId = activeScreen === "tutorial-test" ? "camera-placeholder-tutorial" : "camera-placeholder";
-    const dotId = activeScreen === "tutorial-test" ? "camera-dot-tutorial" : "camera-dot";
+    const canvasId = activeScreen === "intro" ? "canvas-tutorial" : "canvas";
+    const placeholderId = activeScreen === "intro" ? "camera-placeholder-tutorial" : "camera-placeholder";
+    const dotId = activeScreen === "intro" ? "camera-dot-tutorial" : "camera-dot";
 
     // Convenience function to setup a webcam
     const flip = true; // whether to flip the webcam
-    webcam = new tmPose.Webcam(activeScreen === "tutorial-test" ? 560 : 360 , activeScreen === "tutorial-test" ? 340 : 240, flip); //16:9 is toturial true dan grote camera anders kleine camera
+    webcam = new tmPose.Webcam(activeScreen === "intro" ? 560 : 360 , activeScreen === "intro" ? 340 : 240, flip); //16:9 is toturial true dan grote camera anders kleine camera
     await webcam.setup(); // request access to the webcam
     await webcam.play();
     window.requestAnimationFrame(loop);
 
     // append/get elements to the DOM
     const canvas = document.getElementById(canvasId);
-    canvas.width = activeScreen === "tutorial-test" ? 560 : 360;
-    canvas.height = activeScreen === "tutorial-test" ? 340 : 240;
+    canvas.width = activeScreen === "intro" ? 560 : 360;
+    canvas.height = activeScreen === "intro" ? 340 : 240;
     ctx = canvas.getContext("2d");
 
     //placeholder vervangen
@@ -108,14 +108,14 @@ async function predict() {
     const poseName = best.probability > 0.90 ? best.className : null;
 
     //CODE TUTORIAL SCREEN
-    if (activeScreen === "tutorial-test") {
+    if (activeScreen === "intro") {
         document.querySelector("#current-pose").innerHTML = poseName ?? '—';
     }
 
     const tutorialPoses = ["Right","Left", "Up", "Down", "Neutral",];//verzamel classes in array in de juiste volgorde
     const expectedPose = tutorialPoses[currentStep - 1] //verwachte pose voor huidige stap
 
-    if(activeScreen === "tutorial-test" && currentStep <= totalSteps){
+    if(activeScreen === "intro" && currentStep <= totalSteps){
         if(poseName === expectedPose){ //als de gedetecteerde pose overeenkomt met de verwachte pose voor deze stap
             if(!tutorialTimer){ //als timer nog niet gestart is -> starten
                 tutorialTimer = setTimeout(() => {
@@ -136,7 +136,7 @@ async function predict() {
         document.querySelector('#current-pose-game').textContent = poseName ?? '—';
     }   
 
-    if(activeScreen !== "tutorial-test"){
+    if(activeScreen !== "intro"){
     //verplaats cursor max 2 keer per sec
         const now = Date.now();
         if(now - lastMoveTime > cooldown){
@@ -443,12 +443,12 @@ function resetGame(){ //reset alle variabelen en schermen voor een nieuw spel
     updateCursor();
 
     // Naar game scherm
-    showScreen("tutorial-test");
+    showScreen("intro");
     init();
 }
 
 /* -------- START CODE & EVENT LISTENER VOOR KEYBOARD INPUT  -------- */ 
-showScreen("tutorial-test"); //start op tutorial screen
+showScreen("intro"); //start op tutorial screen
 init();
 
 document.addEventListener('keydown', (e) => {

@@ -1,18 +1,21 @@
-.jersey-10-regular {
-  font-family: "Jersey 10", sans-serif;
-  font-weight: 400;
-  font-style: normal;
-}
+:root {
+    /* kleuren */
+    --color-bg: #08070F;
+    --color-bg-cards: #1a1230;
+    --color-text: #E8E4F0;
+    --color-primary: #7B5EA7;
+    --color-secondary: #B89FD8;
+    --color-tertiary: #A084D8; 
+    --color-correct: #4E9E7A;
+    --color-wrong: #9E4E4E;
 
-.syne {
-  font-family: "Syne", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
+    /* lettertypes */
+    --font-pixel: "Jersey 10", sans-serif;
+    --font-body: "Syne", sans-serif;
 }
 
 body{
-    background-color: #08070F;
+    background-color: var(--color-bg);
     background-image: radial-gradient(ellipse at center, #3D1A6E 0%, #000000 100%);
     background-repeat: no-repeat;
     background-size: cover;
@@ -22,72 +25,39 @@ body{
     flex-direction: column;
 }
 
+/* TYPOGRAPHY */
+
 h1{
-    font-family: "Jersey 10", sans-serif;
+    font-family: var(--font-pixel);
     font-size: 64px;
-    color: #E8E4F0;
+    color: var(--color-text);
     margin-bottom: 0.2em;
 }
 
 h2, p{
-    font-family: "Syne", sans-serif;
+    font-family: var(--font-body);
     letter-spacing: 2px;
     font-size: 16px;
-    color: #E8E4F0;
-}
-
-#game{
-    display: none;
-}
-
-#win {
-    display: none;
-}
-
-#lose {
-    display: none;
-}
-
-.title{
-    text-align: center;
-    line-height: 0.50;
-}
-
-.titleGame {
-    text-align: left;
-}
-
-#winTitle, #loseTitle {
-    font-family: "Syne", sans-serif;
-    font-size: 40px;
-}
-
-.mainEnd .word {
-    margin: 0;
-}
-
-.stat-title-win, .stat-title-lose{
-    font-family: "Syne", sans-serif;
-    font-weight: bold;
-    line-height: 0;
-    font-size: 32px;
-}
-
-#winTitle, .stat-title-win{
-    color: #4E9E7A;
-}
-
-#loseTitle, .stat-title-lose {
-    color: #9E4E4E;
+    color: var(--color-text);
 }
 
 a {
-    font-family: "Jersey 10", sans-serif;
+    font-family: var(--font-pixel);
     font-size: 40px;
-    color: #E8E4F0;
+    color: var(--color-text);
     text-decoration: none;
     text-align: center;
     padding: 2rem;
+}
+
+/* --- SECTIONS --- */
+
+#game, #win, #lose { display: none;}
+
+/* ---- INTRO SCREEN ---- */
+#intro {
+    width: 90%;
+    align-content: center;
 }
 
 .main{
@@ -102,17 +72,102 @@ a {
     width: 100%;
 }
 
-.mainGame{
+.title{
+    text-align: center;
+    line-height: 0.50;
+}
+
+/* PROGRESS BAR INTRO */
+.progress-bar {
+  width: 100%;
+  height: 4px;
+  background: #3D2A6E;
+  border-radius: 2px;
+  margin-bottom: 2em;
+}
+
+.progress-fill {
+  height: 4px;
+  background: var(--color-tertiary);
+  border-radius: 2px;
+  width: 20%; /* stap 1 van 5 = 20% */
+  transition: width 0.4s ease;
+}
+
+.step-counter {
+  font-size: 13px;
+  color: var(--color-tertiary);
+  margin-bottom: 1rem;
+}
+
+/* instructions */
+.instructions{
     display: flex;
-    flex-direction: row;
-    margin: 0 2em;
+    flex-direction: column;
+    width: 50%;
 }
 
 .pose-instructions{
     display: flex;
     flex-direction: column;
     text-align: left;
+}
 
+.box {
+    background-color: hsla(0, 0%, 100%, 0.031);
+    border: 1px solid  hsla(0, 0%, 100%, 0.103);
+    border-radius: 22px;
+    margin: 0.5rem;
+    padding: 0 1em;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.icon{
+    color: var(--color-text);
+    width: 75px;
+    height: 75px;
+    align-content: center;
+    text-align: center;
+}
+
+.instructionPose {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+}
+
+.instructionPose h2 { margin: 1em 0 0em 0;}
+
+.instructionPose p { margin: 0.5em 0 1em 0;}
+
+/* CAMERA INTRO */
+.card-intro {
+    margin-top: 1em;
+    background: var(--color-bg-cards);
+    border-radius: 16px;
+    padding: 14px;
+    width: 580px;
+}
+
+#camera-placeholder, #camera-placeholder-tutorial {
+    font-family: var(--font-body);
+    letter-spacing: 2px;
+    font-size: 16px;
+    color: var(--color-text);
+    display: block;
+    text-align: center;
+}
+
+/* --- GAME SCREEN --- */
+
+.titleGame { text-align: left;}
+
+.mainGame{
+    display: flex;
+    flex-direction: row;
+    margin: 0 2em;
 }
 
 .left-column{
@@ -131,86 +186,11 @@ a {
     padding-top: 4em;
 }
 
-.mainEnd{
-    margin: 5em 18em;
-    display: flex;
-    flex-direction: column;
-    gap: 2em;
-}
-
-.info-card{
-    display: flex;
-    flex-direction: row;
-    padding: 1em 3em;
-    border: 1px solid white;
-    border-radius: 20px;
-    gap: 1.5em;
-    align-items: center;
-}
-
-.statistics{
-    display: flex;
-    flex-direction: row;
-    gap: 3em;
-}
-
-.stat-card{
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    border: 1px solid white;
-    border-radius: 20px;
-    width: 33%;
-    padding-top: 1em;
-    justify-content: center;
-    text-align: center;
-}
-
-.instructions{
-    display: flex;
-    flex-direction: column;
-    width: 50%;
-}
-
 .row {
     display: flex;
     flex-direction: row;
     margin: 0px;
     gap: 1em;
-}
-
-.box {
-    background-color: hsla(0, 0%, 100%, 0.031);
-    border: 1px solid  hsla(0, 0%, 100%, 0.103);
-    border-radius: 22px;
-    display: block;
-    margin: 0.5rem;
-    padding: 0 1em;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-}
-
-.icon{
-    color: whitesmoke;
-    width: 75px;
-    height: 75px;
-    align-content: center;
-    text-align: center;
-}
-
-.instructionPose {
-    display: flex;
-    flex-direction: column;
-    margin: 0;
-}
-
-.instructionPose h2 {
-    margin: 1em 0 0em 0;
-}
-
-.instructionPose p {
-    margin: 0.5em 0 1em 0;
 }
 
 .detected-pose, .detected-pose-game{
@@ -219,46 +199,19 @@ a {
     justify-content: space-between;
 }
 
-.detected-pose-game p, .detected-pose p{
-    margin: 0.5em 1em 0 1em;
-}
+.detected-pose-game p, .detected-pose p{ margin: 0.5em 1em 0 1em; }
 
-.btn{
-    align-self: center;
-    text-align: center;
-    border: 1px solid white;
-    display: inline-block;
-    border-radius: 20px;
-    margin: 1rem ;
-}
-
-.btnRestart{
-    align-self: center;
-    text-align: center;
-    border-radius: 20px;
-    margin: 1rem;
-}
-
-.btnRestart a {
-    justify-content: center;
-}
-
-.fa-arrows-rotate {
-    margin: 0 16px;
-}
 
 /* --- LEFT SIDE GAME --- */
 /* LETTERS WORD */
 .letterWord {
-    font-family: "Jersey 10", sans-serif;
+    font-family: var(--font-pixel);
     font-size: 48px;
-    color: #E8E4F0;
+    color: var(--color-text);
     text-align: center;
 }
 
-.letterWord {
-    margin: 0.2em;
-}
+.letterWord { margin: 0.2em;}
 
 .lettersWord{
     display: flex;
@@ -280,14 +233,11 @@ a {
     left: 0;
     right: 0;
     height: 6px;
-    background: #7B5EA7;
+    background: var(--color-primary);
     border-radius: 10px;
 }
 
-.lettersWord div:has(.letterWord:not(:empty))::after {
-    background: #B89FD8;
-    
-}
+.lettersWord div:has(.letterWord:not(:empty))::after { background: var(--color-secondary);}
 
 /* KEYBOARD */
 .keyboard{
@@ -297,17 +247,14 @@ a {
     align-items: center;
 }
 
-.keyboard .row div {
-    position: relative;
-}
+.keyboard .row div {position: relative;}
 
 .letter {
-    font-family: "Jersey 10", sans-serif;
+    font-family: var(--font-pixel);
     font-size: 40px;
-    color: #E8E4F0;
+    color: var(--color-text);
     text-align: center;
     position: relative;
-
     border-radius: 10px;
     border: 0.5px solid #3D1A6E;
     padding: 0.2em 0.5em;
@@ -316,38 +263,21 @@ a {
 }
 
 .active {
-    border-color: #B89FD8;
-    color: #B89FD8;
-    box-shadow: 0 0 5px #B89FD8;
-}
-
-/* CLAUDE */
-.selexct {
-    position: relative;
-}
-
-.select::after {
-    content: '';
-    position: absolute;
-    inset: -3px;
-    border-radius: 10px;
-    padding: 3px;
-    background: conic-gradient(from 0deg, #B89FD8 var(--progress), transparent var(--progress));
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    mask-composite: exclude;
-    animation: borderFill 2s linear forwards;
+    border-color: var(--color-secondary);
+    color: var(--color-secondary);
+    box-shadow: 0 0 5px var(--color-secondary);
 }
 
 .correct {
-    border: 0.5px solid #4E9E7A;
-    color: #4E9E7A;
-    box-shadow: 0 0 5px  #4E9E7A;
+    border: 0.5px solid var(--color-correct);
+    color: var(--color-correct);
+    box-shadow: 0 0 5px var(--color-correct);
 }
 
 .wrong {
-    border: 0.5px solid  #9E4E4E;
-    color: #9E4E4E;
-    box-shadow: 0 0 5px #9E4E4E;
+    border: 0.5px solid var(--color-wrong);
+    color: var(--color-wrong);
+    box-shadow: 0 0 5px var(--color-wrong);
 }
 
 /* --- RIGHT SIDE GAME --- */
@@ -358,63 +288,32 @@ a {
     text-align: right;
 }
 
-.lives p {
-    margin-top: 0;
-}
+.lives p { margin-top: 0;}
 
-.fa-heart {
-    color: #B89FD8;
-}
+.fa-heart {color: var(--color-secondary);}
 
-/* HANGMAN  */
+/* HANGMAN */
 #hangman{
     width: 100%;
     max-width: 300px;
     height: auto;
 }
 
-.hangman-rope{
-    display: none;
-}
+.hangman-rope{ display: none; }
 
-.hangman-head{
-    display: none;
-}
+.hangman-head{ display: none;}
 
-.hangman-body{
-    display: none;
-}
+.hangman-body{ display: none;}
 
-.hangman-arms{
-    display: none;
-}
+.hangman-arms{display: none;}
 
-.hangman-legs{
-    display: none;
-}
+.hangman-legs{display: none;}
 
-/* CAMERA INTRO*/
-.card-intro {
-    margin-top: 1em;
-    background: #1a1230;
-    border-radius: 16px;
-    padding: 14px;
-    width: 580px;
-}
-
-#camera-placeholder, #camera-placeholder-tutorial {
-    font-family: "Syne", sans-serif;
-    letter-spacing: 2px;
-    font-size: 16px;
-    color: #E8E4F0;
-    display: block;
-    text-align: center;
-}
 
 /* CAMERA GAME*/
 .card {
     margin-top: 1em;
-    background: #1a1230;
+    background: var(--color-bg-cards);
     border-radius: 16px;
     padding: 14px;
     width: 50%;
@@ -429,10 +328,10 @@ a {
 }
 
 .camera-header h2 {
-    font-family: "Syne", sans-serif;
+    font-family: var(--font-body);
     letter-spacing: 2px;
     font-size: 16px;
-    color: whitesmoke;
+    color: var(--color-text);
     margin: 0;
 }
 
@@ -445,8 +344,8 @@ a {
 }
 
 .camera-dot.active {
-    background: #4eca82;
-    box-shadow: 0 0 8px #4eca82;
+    background: var(--color-correct);
+    box-shadow: 0 0 8px var(--color-correct);
 }
 
 .camera-screen {
@@ -456,34 +355,70 @@ a {
     width: 100%;
 }
 
-#canvas-tutorial {
-    margin: 0.5em;
+#canvas-tutorial { margin: 0.5em;}
+
+/* --- WIN/LOSE SCREENS --- */
+#winTitle, .stat-title-win{ color: var(--color-correct);}
+
+#loseTitle, .stat-title-lose { color: var(--color-wrong);}
+
+#winTitle, #loseTitle {
+    font-family: var(--font-body);
+    font-size: 40px;
 }
 
-#tutorial-test {
-    width: 90%;
-    align-content: center;
+.mainEnd{
+    margin: 5em 18em;
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
 }
 
-/* PROGRESS BAR */
-.progress-bar {
-  width: 100%;
-  height: 4px;
-  background: #3D2A6E;
-  border-radius: 2px;
-  margin-bottom: 2em;
+.mainEnd .word { margin: 0;}
+
+/* Statistics */
+.info-card{
+    display: flex;
+    flex-direction: row;
+    padding: 1em 3em;
+    border: 1px solid var(--color-text);
+    border-radius: 20px;
+    gap: 1.5em;
+    align-items: center;
 }
 
-.progress-fill {
-  height: 4px;
-  background: #A084D8;
-  border-radius: 2px;
-  width: 20%; /* stap 1 van 5 = 20% */
-  transition: width 0.4s ease;
+.statistics{
+    display: flex;
+    flex-direction: row;
+    gap: 3em;
 }
 
-.step-counter {
-  font-size: 13px;
-  color: #A084D8;
-  margin-bottom: 1rem;
+.stat-card{
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border: 1px solid var(--color-text);
+    border-radius: 20px;
+    width: 33%;
+    padding-top: 1em;
+    justify-content: center;
+    text-align: center;
 }
+
+.stat-title-win, .stat-title-lose{
+    font-family: var(--font-body);
+    font-weight: bold;
+    line-height: 0;
+    font-size: 32px;
+}
+
+.btnRestart{
+    align-self: center;
+    text-align: center;
+    border-radius: 20px;
+    margin: 1rem;
+}
+
+.btnRestart a { justify-content: center; }
+
+.fa-arrows-rotate {  margin: 0 16px;}

@@ -11,7 +11,8 @@
     <title>GAME - XD HANGMAN</title>
 </head>
 <body>
-    <section id="tutorial-test">
+    <!-- INTRO SCREEN -->
+    <section id="intro">
         <div class="main">
             <div class="title">
                 <h1>XD HANGMAN</h1>
@@ -94,6 +95,7 @@
         </div>
     </section>
     
+    <!-- GAME SCREEN -->
     <section id="game">
         <div class="mainGame">
             <div class="left-column">
@@ -151,7 +153,7 @@
                 </div> 
                 <!-- hangman -->
                 <div class="card">
-                    <svg id="hangman" viewBox="0 0 300 300" width="300" height="300" fill="none" xmlns="http://www.w3.org/2000/svg" id="hangman-svg">
+                    <svg id="hangman" viewBox="0 0 300 300" width="300" height="300" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <!-- Basis -->
                         <line x1="30" y1="270" x2="270" y2="270" stroke="#7B5EA7" stroke-width="5" stroke-linecap="round"/>
                         <line x1="90" y1="270" x2="90" y2="30" stroke="#7B5EA7" stroke-width="5" stroke-linecap="round"/>
@@ -194,6 +196,7 @@
         </div>
     </section>
 
+    <!-- WIN/LOSE SCREENS -->
     <section id="win">
         <div class="title">
             <h1 id="winTitle">YOU WIN!</h1>
@@ -249,11 +252,11 @@
 
             <div class="statistics">
                 <div class="stat-card">
-                    <p class="stat-title-lose lives-left "></p>
+                    <p class="stat-title-lose lives-left"></p>
                     <p>LIVES LEFT</p>
                 </div>
                 <div class="stat-card">
-                    <p class="stat-title-lose guessed-letters" ></p>
+                    <p class="stat-title-lose guessed-letters"></p>
                     <p >GUESSED LETTERS</p>
                 </div>
                 <div class="stat-card">
