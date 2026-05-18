@@ -26,7 +26,6 @@ body{
 }
 
 /* TYPOGRAPHY */
-
 h1{
     font-family: var(--font-pixel);
     font-size: 64px;
@@ -51,7 +50,6 @@ a {
 }
 
 /* --- SECTIONS --- */
-
 #game, #win, #lose { display: none;}
 
 /* ---- INTRO SCREEN ---- */
@@ -201,7 +199,6 @@ a {
 
 .detected-pose-game p, .detected-pose p{ margin: 0.5em 1em 0 1em; }
 
-
 /* --- LEFT SIDE GAME --- */
 /* LETTERS WORD */
 .letterWord {
@@ -308,7 +305,6 @@ a {
 .hangman-arms{display: none;}
 
 .hangman-legs{display: none;}
-
 
 /* CAMERA GAME*/
 .card {

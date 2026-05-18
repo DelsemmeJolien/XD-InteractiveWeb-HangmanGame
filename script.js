@@ -310,13 +310,12 @@ function saveScores(){ //bewaar scores in local storage en update ranglijst
     scores.push(livesLeft);
     localStorage.setItem("scores", JSON.stringify(scores));
 
-    //test
     const sortedScores = scores.sort((a, b) => b - a); //sorteren van hoog naar laag
     const rang = sortedScores.indexOf(parseInt(livesLeft)) + 1; //rang bepalen van huidige score
 
     //in html plaatsen
     document.querySelectorAll(".lives-left").forEach(element => {
-    element.innerHTML = livesLeft;
+        element.innerHTML = livesLeft;
     });
     document.querySelectorAll(".guessed-letters").forEach(element => {
         element.innerHTML = guessedLetter.size;
@@ -326,7 +325,6 @@ function saveScores(){ //bewaar scores in local storage en update ranglijst
 
     // Timer starten en naar intro
     restartGame();
-
 }
 
 /* -------- FUNCTIES WIN/LOSE -------- */
