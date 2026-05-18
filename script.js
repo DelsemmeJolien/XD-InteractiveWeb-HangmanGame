@@ -82,8 +82,6 @@ async function init() {
     document.getElementById(dotId).classList.add('active');
 }
 
-
-
 async function loop(timestamp) {
     webcam.update(); // update the webcam frame
 
